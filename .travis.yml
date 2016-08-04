@@ -14,7 +14,7 @@ addons:
     sources:
     - mongodb-3.2-precise
     packages:
-    - mongodb-org-server
+    - mongodb-org
 before_script:
   - sleep 15
   - mongo mydb_test --eval 'db.addUser("travis", "test");'
