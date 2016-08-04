@@ -6,11 +6,9 @@ python:
 install: 
   - pip install -r requirements.txt
   - python setup.py install
-services:
-  - mongodb
+services: mongodb
 before_script:
   - sleep 15
   - mongo mydb_test --eval 'db.addUser("travis", "test");
 # command to build and run tests
 script:
-  - cd $T_DIR && ./travis.sh
