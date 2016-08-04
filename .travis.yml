@@ -13,3 +13,4 @@ before_script:
   - mongo mydb_test --eval 'db.addUser("travis", "test");'
 # command to build and run tests
 script:
+  - mongo --version
