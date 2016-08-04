@@ -18,7 +18,7 @@ addons:
 before_script:
   - sleep 15
  - mongo phil_test --eval '(db.stats())'
-#- mongo mydb_test --eval '(db.createUser({user: "travis", pwd: "test"}))'
+# - mongo mydb_test --eval '(db.createUser({user: "travis", pwd: "test"}))'
 # command to build and run tests
 script:
   - mongo --version
