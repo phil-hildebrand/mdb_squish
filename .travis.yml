@@ -17,7 +17,7 @@ addons:
     - mongodb-org
 before_script:
   - sleep 15
-  - mongo mydb_test --eval 'db.addUser("travis", "test");'
+  - mongo mydb_test --eval 'db.createUser("travis", "test");'
 # command to build and run tests
 script:
   - mongo --version
