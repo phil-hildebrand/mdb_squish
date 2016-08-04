@@ -4,11 +4,11 @@ python:
   - "2.7"
   - "3.5"
 # command to install dependencies
-install: 
+install:
   - pip install -r requirements.txt
   - python setup.py install
 services:
-- mongodb
+  - mongodb
 addons:
   apt:
     sources:
@@ -17,7 +17,7 @@ addons:
     - mongodb-org
 before_script:
   - sleep 15
- - mongo phil_test --eval '(db.stats())'
+  - mongo phil_test --eval '(db.stats())'
 # - mongo mydb_test --eval '(db.createUser({user: "travis", pwd: "test"}))'
 # command to build and run tests
 script:
