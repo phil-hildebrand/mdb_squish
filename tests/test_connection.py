@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import pymongo as m
 
-dev test_connection()
+def test_connection()
 
     #############################################################################
     #    Connection details
