@@ -9,7 +9,7 @@ def test_connection():
     #############################################################################
     
     try:
-        conn = m.MongoClient('mongodb://localhost:27017/'
+        conn = m.MongoClient('mongodb://localhost:27017/')
         info = conn.server_info()
         print(' Connected : %s' % info)
     
