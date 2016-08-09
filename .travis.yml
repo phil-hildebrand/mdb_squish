@@ -16,11 +16,9 @@ addons:
     packages:
     - mongodb-org
 before_script:
-  - sleep 15
-  - mongo phil_test --eval '(db.stats())'
-# - mongo mydb_test --eval '(db.createUser({user: "travis", pwd: "test"}))'
+  - sleep 5
 # command to build and run tests
 script:
   - mongo --version
-after_script_script:
+  - mongo phil_test --eval '(db.stats())'
   - python setup.py test
