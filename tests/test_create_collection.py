@@ -9,7 +9,7 @@ def create():
     try:
         test_connection.connect()
         db = conn['mongo_test']
-        db.mongo_collection.count()
+        db['mongo_collection'].count()
         return True
     
     except Exception as e:
