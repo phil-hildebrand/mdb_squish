@@ -13,6 +13,7 @@ def create():
         return True
     
     except Exception as e:
+        print(e)
         return False
 
 class test_connection(TestCase):
