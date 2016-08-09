@@ -3,6 +3,7 @@
 import pymongo as m
 import test_connection
 from unittest import TestCase
+SHOW_ERROR_MESSAGES = True
 
 def create():
 
@@ -10,7 +11,16 @@ def create():
         test_connection.connect()
         db = conn['mongo_test']
         db['mongo_collection'].count()
-        return True
+        return(db)
+    
+    except Exception as e:
+        print(e)
+        return False
+
+def get_count(xdb):
+    try:
+        count =xdb['mongo_collection'].count()
+        return(count)
     
     except Exception as e:
         print(e)
@@ -18,4 +28,8 @@ def create():
 
 class test_connection(TestCase):
     def test(self):
-        self.assertTrue(create())
+        mydb = create()
+        if (mydb):
+            self.assertTrue(get_count(my_db))
+        else
+            self.assertTrue(False)
