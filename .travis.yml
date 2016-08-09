@@ -22,3 +22,5 @@ before_script:
 # command to build and run tests
 script:
   - mongo --version
+after_script_script:
+  - python setup.py test
