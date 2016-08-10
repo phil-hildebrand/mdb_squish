@@ -46,5 +46,5 @@ class test_connection(t.TestCase):
         total_insert_duration = total_insert - start_time
         print(' - inserted %d in %9.2f seconds' % (100, total_insert_duration))
         print('  - Avg insert time: %9.4f seconds' % avg_insert)
-        return (total_insert_duration + total_select_duration)
+        return (total_insert_duration)
 
