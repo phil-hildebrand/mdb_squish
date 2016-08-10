@@ -9,7 +9,7 @@ import time
 import unittest as t
 
 
-class test_connection(t.TestCase):
+class test_dataload(t.TestCase):
  
     def setUp(self):
         '''We should be able to create a connection for load tests'''
@@ -22,6 +22,7 @@ class test_connection(t.TestCase):
 
 
     def test_load_collection(self):
+        '''We should be able to insert data for load tests'''
         insertions = 100
         total_insert = 0
         avg_insert = 0
