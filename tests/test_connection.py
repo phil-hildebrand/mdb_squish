@@ -19,7 +19,7 @@ class test_connection(t.TestCase):
     def test_get_count(self):
         '''We should be able to create a collection'''
 
-        self.assertgreater(db['mongo_collection'].count(),-1)
+        self.assertGreater(db['mongo_collection'].count(),-1)
 
-if __name__ == '__main__':
-    t.main()
+# if __name__ == '__main__':
+#    t.main()
