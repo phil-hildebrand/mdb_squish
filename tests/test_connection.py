@@ -16,5 +16,3 @@ class test_connection(t.TestCase):
 
         counter = self.db['mongo_collection'].count()
 
-# if __name__ == '__main__':
-#    t.main()
