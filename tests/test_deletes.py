@@ -20,8 +20,9 @@ class test_deletes(t.TestCase):
         '''We should be able to delete a subset of documents from collections'''
 
         deletes = 40
-        total_delete= 0
-        avg_delete= 0
+        total_delete = 0
+        avg_delete = 0
+        deleted = 0
     
         start_time = time.time()
         for doc in range(deletes):
@@ -30,7 +31,7 @@ class test_deletes(t.TestCase):
                 # deleted = self.db['mongo_collection'].findOneAndDelete({"randString": {"$exists": "true"}})
                 # id = self.db['mongo_collection'].find({"randString": {"$exists": "true"}}).limit(1)
                 result = self.db['mongo_collection'].delete_one({"randString": {"$exists": "true"}})
-                print result.deleted_count
+                deleted += result.deleted_count
     
             except Exception as e:
                 print ('Delete Failed: (%s)' % e)
@@ -41,6 +42,6 @@ class test_deletes(t.TestCase):
         total_delete = deleted_time
     
         total_delete_duration = total_delete - start_time
-        print(' - deleted %d in %9.2f seconds' % (100, total_delete_duration))
+        print(' - deleted %d in %9.2f seconds' % (deleted, total_delete_duration))
         print('  - Avg delete time: %9.4f seconds' % avg_delete)
         return (total_delete_duration)
