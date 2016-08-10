@@ -4,24 +4,19 @@ import pymongo as m
 import unittest as t
 
 class test_connection(t.TestCase):
+    db = ""
 
     def setUp(self):
         '''We should be able to create a connection'''
 
-        try:
-            # self.conn = m.MongoClient('localhost',27017,connectTimeoutMS=2000,socketTimeoutMS=2000)
-            self.conn = "test"
-            pass
-
-        except Exception:
-            fail
+        self.conn = m.MongoClient('localhost',27017,connectTimeoutMS=2000,socketTimeoutMS=2000)
 
     def test_create(self):
         '''We should be able to create a database'''
 
         db = self.conn['mongo_test']
    
-    def test_get_count(db):
+    def test_get_count(self):
         '''We should be able to create a collection'''
 
         self.assertgreater(db['mongo_collection'].count(),-1)
