@@ -31,7 +31,7 @@ class test_deletes(t.TestCase):
     
             except Exception as e:
                 print ('Delete Failed: (%s)' % e)
-                fail
+                t.fail ('Delete Failed')
     
             deleted_time = time.time()
             avg_delete = (deleted_time - start_time) / (doc + 1)
