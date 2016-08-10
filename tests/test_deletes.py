@@ -28,7 +28,9 @@ class test_deletes(t.TestCase):
             delete_time = time.time()
             try:
                 # deleted = self.db['mongo_collection'].findOneAndDelete({"randString": {"$exists": "true"}})
-                deleted = self.db['mongo_collection'].find({"randString": {"$exists": "true"}}).limit(20).delete()
+                # id = self.db['mongo_collection'].find({"randString": {"$exists": "true"}}).limit(1)
+                result = self.db['mongo_collection'].delete_one({"randString": {"$exists": "true"}})
+                print result.delete_count
     
             except Exception as e:
                 print ('Delete Failed: (%s)' % e)
