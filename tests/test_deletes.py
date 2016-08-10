@@ -27,11 +27,11 @@ class test_deletes(t.TestCase):
         for doc in range(deletes):
             delete_time = time.time()
             try:
-                deleted = self.db['mongo_collection'].find({"randString":
-                                                           {"$exists": "true"}}).limit(20).remove()
+                deleted = self.db['mongo_collection'].findOneAndDelete({"randString": {"$exists": "true"}})
     
             except Exception as e:
                 print ('Delete Failed: (%s)' % e)
+                fail
     
             deleted_time = time.time()
             avg_delete = (deleted_time - start_time) / (doc + 1)
