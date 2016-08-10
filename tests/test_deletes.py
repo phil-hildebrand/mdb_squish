@@ -20,8 +20,8 @@ class test_deletes(t.TestCase):
         '''We should be able to delete a subset of documents from collections'''
 
         deletes = 40
-        total_insert = 0
-        avg_insert = 0
+        total_delete= 0
+        avg_delete= 0
     
         start_time = time.time()
         for doc in range(deletes):
@@ -34,7 +34,7 @@ class test_deletes(t.TestCase):
                 print ('Delete Failed: (%s)' % e)
     
             deleted_time = time.time()
-            avg_delete = (deleted_time - start_time) / (ins + 1)
+            avg_delete = (deleted_time - start_time) / (doc + 1)
         total_delete = deleted_time
     
         total_delete_duration = total_delete - start_time
