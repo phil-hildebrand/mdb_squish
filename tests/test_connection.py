@@ -9,6 +9,7 @@ class test_connection(t.TestCase):
         '''We should be able to create a connection'''
 
         self.conn = m.MongoClient('localhost',27017,connectTimeoutMS=2000,socketTimeoutMS=2000)
+        self.db = ""
 
     def test_create(self):
         '''We should be able to create a database'''
