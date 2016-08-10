@@ -21,16 +21,16 @@ class test_compcation(t.TestCase):
         '''We should be able to compact a collection'''
 
         s = self.db.command("collstats", 'mongo_collection')
-        print json.dumps(s, sort_keys=True, indent=4, separators=(',', ': '))
+        print (json.dumps(s, sort_keys=True, indent=4, separators=(',', ': ')))
     
         start_time = time.time()
         try:
-            result = self.db['mongo_collection'].command("compact", 'mongo_collection')
+            result = self.db.command("compact", 'mongo_collection')
     
         except Exception as e:
             print ('Copmcation Failed: (%s)' % e)
             t.testcase.fail ('Compcation Failed')
     
         s = self.db.command("collstats", 'mongo_collection')
-        print json.dumps(s, sort_keys=True, indent=4, separators=(',', ': '))
+        print (json.dumps(s, sort_keys=True, indent=4, separators=(',', ': ')))
 
