@@ -4,9 +4,9 @@ import pymongo as m
 import unittest as t
 
 class test_connection(t.TestCase):
-    db = ""
 
     def setUp(self):
+        db = ""
         '''We should be able to create a connection'''
 
         self.conn = m.MongoClient('localhost',27017,connectTimeoutMS=2000,socketTimeoutMS=2000)
