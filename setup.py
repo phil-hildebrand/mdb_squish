@@ -55,6 +55,7 @@ setup(name = 'mdb_squish',
       install_requires = [ requirements ],
       packages = ['mdb_squish'],
       test_suite="tests",
+      use_2to3=True,
 #      scripts = ['bin/mdb_squish.py'],
       cmdclass = {'test': TestCommand, 'clean': CleanCommand}
 )
