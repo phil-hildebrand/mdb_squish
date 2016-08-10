@@ -52,8 +52,9 @@ setup(name = 'mdb_squish',
       author = 'Phil Hildebrand',
       author_email = 'phil.hildebrand@gmail.com',
       license = 'mit',
-      install_requires = requirements,
-      package_data = {},
+      install_requires = [ requirements ],
+      packages = ['mdb_squish'],
+      test_suite="tests",
       scripts = ['bin/mdb_squish.py'],
       cmdclass = {'test': TestCommand, 'clean': CleanCommand}
 )
