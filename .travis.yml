@@ -22,3 +22,5 @@ script:
   - mongo --version
   - mongo phil_test --eval '(db.stats())'
   - python setup.py test
+  - python mdb_squish --help
+  - python mdb_squish -v -d mongo_test --collections mongo_collection --log-dir . --stats-dir .

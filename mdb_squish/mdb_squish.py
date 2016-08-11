@@ -10,14 +10,25 @@ import sys
 import json
 from multiprocessing.pool import ThreadPool
 
-#######################################################################################
+###############################################################################
 
 databases = []
 collections = dict([])
 
-#######################################################################################
+###############################################################################
+#    Routine to verify file/directory exists
+###############################################################################
+
+
+def verify_file(f):
+    if not os.path.exists(f):
+        print ("Fatal: %s does not exist, exiting program." % f)
+        log.error('  %s does not exist, exiting program.' % f)
+        sys.exit(2)
+
+###############################################################################
 #    Parse Comandline Options
-#######################################################################################
+###############################################################################
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', '--verbose', action='store_true',
@@ -29,20 +40,18 @@ parser.add_argument('-p', '--port', type=int, default=27017,
 parser.add_argument('-d', '--database', nargs='+', default='all',
                     help='limit stats to database X (default=all)')
 parser.add_argument('--collections', nargs='+',
-                    help='limit stats to these collections')
+                    help='limit compaction to these collections')
 parser.add_argument('-c', '--concurrency', default=3, type=int,
-                    help='# of stats threads (default=3)')
+                    help='# of compaction threads (default=3)')
 parser.add_argument('--log-dir', default='/var/log',
-                    help='MongoDB Get Stats log file location (default=/var/log)'
-                    )
+                    help='MongoDB Get compaction log file location (default=/var/log)')
 parser.add_argument('--stats-dir', default='/tmp',
-                    help='MongoDB compaction stats dump file location (default=/tmp/<server>.mdb_squish_stats'
-                    )
+                    help='MongoDB compaction stats dump file location (default=/tmp/<server>.mdb_squish_stats')
 args = parser.parse_args()
 
-#######################################################################################
+###############################################################################
 #    Setup Logging Options
-#######################################################################################
+###############################################################################
 
 baselevel = log.INFO
 
@@ -50,13 +59,11 @@ if args.verbose:
     baselevel = log.DEBUG
     log.basicConfig(filename='%s/mdb_squish.log' % args.log_dir,
                     format='%(asctime)s %(levelname)s: %(message)s',
-                    level=baselevel
-                   )
+                    level=baselevel)
 else:
     log.basicConfig(filename='%s/mdb_squish.log' % args.log_dir,
                     format='%(asctime)s %(levelname)s: %(message)s',
-                    level=baselevel
-                   )
+                    level=baselevel)
 
 # Log to console as well
 
@@ -85,22 +92,12 @@ if args.port:
 log.debug('Verbose output.')
 
 
-#######################################################################################
-#    Routine to verify file/directory exists
-#######################################################################################
-
-def verify_file(f):
-    if not os.path.exists(f):
-        print "Fatal: %s does not exist, exiting program." % f
-        log.error('  %s does not exist, exiting program.' % f)
-        sys.exit(2)
-
 verify_file(args.log_dir)
 verify_file(stats_dir)
 
-#######################################################################################
+###############################################################################
 #    Connection details
-#######################################################################################
+###############################################################################
 
 log.debug('Attempting to connecting to %s:%s' % (mongo_host, mongo_port))
 
@@ -110,7 +107,7 @@ try:
     log.debug(' Connected : %s' % info)
 
 except Exception as e:
-    print "Fatal: could not establish database connection to %s:%s, exiting program." % (mongo_host, mongo_port)
+    print ("Fatal: could not establish database connection to %s:%s, exiting program." % (mongo_host, mongo_port))
     log.error('No database connection could be established.')
     log.error(e)
     sys.exit(2)
