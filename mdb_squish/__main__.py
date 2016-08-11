@@ -1,0 +1,1 @@
+import mdb_squish

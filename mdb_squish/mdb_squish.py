@@ -16,6 +16,16 @@ databases = []
 collections = dict([])
 
 #######################################################################################
+#    Routine to verify file/directory exists
+#######################################################################################
+
+def verify_file(f):
+    if not os.path.exists(f):
+        print "Fatal: %s does not exist, exiting program." % f
+        log.error('  %s does not exist, exiting program.' % f)
+        sys.exit(2)
+
+#######################################################################################
 #    Parse Comandline Options
 #######################################################################################
 
@@ -29,11 +39,11 @@ parser.add_argument('-p', '--port', type=int, default=27017,
 parser.add_argument('-d', '--database', nargs='+', default='all',
                     help='limit stats to database X (default=all)')
 parser.add_argument('--collections', nargs='+',
-                    help='limit stats to these collections')
+                    help='limit compaction to these collections')
 parser.add_argument('-c', '--concurrency', default=3, type=int,
-                    help='# of stats threads (default=3)')
+                    help='# of compaction threads (default=3)')
 parser.add_argument('--log-dir', default='/var/log',
-                    help='MongoDB Get Stats log file location (default=/var/log)'
+                    help='MongoDB Get compaction log file location (default=/var/log)'
                     )
 parser.add_argument('--stats-dir', default='/tmp',
                     help='MongoDB compaction stats dump file location (default=/tmp/<server>.mdb_squish_stats'
@@ -84,16 +94,6 @@ if args.port:
 
 log.debug('Verbose output.')
 
-
-#######################################################################################
-#    Routine to verify file/directory exists
-#######################################################################################
-
-def verify_file(f):
-    if not os.path.exists(f):
-        print "Fatal: %s does not exist, exiting program." % f
-        log.error('  %s does not exist, exiting program.' % f)
-        sys.exit(2)
 
 verify_file(args.log_dir)
 verify_file(stats_dir)
