@@ -146,8 +146,8 @@ else:
     #     and run compactions in parallel
     ###############################################################################
 
-    log.debug('Compacting all collections in the following databases and logging stats to %s:' % stats_dir)
-    for compact_db in r.db_list().run(conn):
+    log.debug('Compacting all collections in all databases')
+    for compact_db in db.database_names():
         log.debug(' -- %s' % compact_db)
         for collection in db.collection_names():
             log.debug('Scheduling compaction for %s' % collection)
