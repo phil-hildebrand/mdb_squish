@@ -27,9 +27,9 @@ def verify_file(f):
         sys.exit(2)
 
 
-#######################################################################################
+###############################################################################
 #    Compact collections
-#######################################################################################
+###############################################################################
 
 def compact(collection_args):
     my_collection_db, my_collection, my_concurrency, my_stats_dir = collection_args
@@ -125,15 +125,15 @@ except Exception as e:
     log.error(e)
     sys.exit(2)
 
-#######################################################################################
+###############################################################################
 #    Parse database and collection list and run compactions in parallel
-#######################################################################################
+###############################################################################
 
 compact_collections = []
 pool = ThreadPool(args.concurrency)
 
 if args.database != 'all':
-    compact_db = args.database [0]
+    compact_db = args.database[0]
     db = conn[compact_db]
     log.debug('Compacting all collections in database %s' % compact_db)
     for collection in db.collection_names():
@@ -141,10 +141,10 @@ if args.database != 'all':
         compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
 else:
 
-#######################################################################################
-#    If collection objects not filtered, Get full database and table list and run
-#    compactions in parallel
-#######################################################################################
+    ###############################################################################
+    #    If collection objects not filtered, Get full database and table list
+    #     and run compactions in parallel
+    ###############################################################################
 
     log.debug('Compacting all collections in the following databases and logging stats to %s:' % stats_dir)
     for compact_db in r.db_list().run(conn):

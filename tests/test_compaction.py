@@ -20,7 +20,7 @@ class test_compaction(t.TestCase):
         insertions = 100
         total_insert = 0
         avg_insert = 0
-        test_collections = ['mongo_collection', 'mongo_collection_one', mongo_collection_two']
+        test_collections = ['mongo_collection', 'mongo_collection_one', 'mongo_collection_two']
 
         for collections in test_collections:
             start_time = time.time()
