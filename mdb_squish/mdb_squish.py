@@ -26,6 +26,19 @@ def verify_file(f):
         log.error('  %s does not exist, exiting program.' % f)
         sys.exit(2)
 
+
+#######################################################################################
+#    Compact collections
+#######################################################################################
+
+def compact(collection_args):
+    my_collection_db, my_collection, my_concurrency, my_stats_dir = collection_args
+    db = conn[my_collection_db]
+    s = db.command("compact", my_collection)
+    log.debug(' - compcating collection %s.%s' % (my_collection_db, my_collection))
+    stats_info = '%s.%s' % (stat_db, my_collection)
+    return (my_collection_db, my_collection, s)
+
 ###############################################################################
 #    Parse Comandline Options
 ###############################################################################
@@ -112,5 +125,32 @@ except Exception as e:
     log.error(e)
     sys.exit(2)
 
+#######################################################################################
+#    Parse database and collection list and run compactions in parallel
+#######################################################################################
 
-log.info('=======Mongo Stat Collection Complete.========')
+compact_collections = []
+pool = ThreadPool(args.concurrency)
+
+if args.database != 'all':
+    compact_db = args.database [0]
+    db = conn[compact_db]
+    log.debug('Compacting all collections in database %s' % compact_db)
+    for collection in db.collection_names():
+        log.debug('Scheduling Compaction for collection %s' % collection)
+        compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+else:
+
+#######################################################################################
+#    If collection objects not filtered, Get full database and table list and run
+#    compactions in parallel
+#######################################################################################
+
+    log.debug('Compacting all collections in the following databases and logging stats to %s:' % stats_dir)
+    for compact_db in r.db_list().run(conn):
+        log.debug(' -- %s' % compact_db)
+        for collection in db.collection_names():
+            log.debug('Scheduling compaction for %s' % collection)
+            compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+
+log.info('=======Mongo CompactionComplete.========')

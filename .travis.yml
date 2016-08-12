@@ -24,3 +24,8 @@ script:
   - python setup.py test
   - python mdb_squish --help
   - python mdb_squish -v -d mongo_test --collections mongo_collection --log-dir . --stats-dir .
+  - cat ./mdb_squish.log
+  - rm ./mdb_squish.log
+  - python mdb_squish -v -d all --collections mongo_collection --log-dir . --stats-dir .
+  - cat ./mdb_squish.log
+  - rm ./mdb_squish.log
