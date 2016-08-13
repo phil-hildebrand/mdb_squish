@@ -36,7 +36,7 @@ def compact(collection_args):
     db = conn[my_collection_db]
     s = db.command("compact", my_collection)
     log.debug(' - compcating collection %s.%s' % (my_collection_db, my_collection))
-    stats_info = '%s.%s' % (stat_db, my_collection)
+    stats_info = '%s.%s' % (my_collection_db, my_collection)
     return (my_collection_db, my_collection, s)
 
 ###############################################################################
