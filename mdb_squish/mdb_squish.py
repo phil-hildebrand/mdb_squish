@@ -37,10 +37,11 @@ def compact(collection_args):
     db = conn[my_collection_db]
     stats = db.command("collstats", my_collection)
     before = stats['storageSize']
-    log.debug(' - compcating collection %s.%s' % (my_collection_db, my_collection))
+    log.debug(' - compcating collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, before))
     s = db.command("compact", my_collection)
     stats = db.command("collstats", my_collection)
     after = stats['storageSize']
+    log.debug(' - compcated collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, after))
     diff = before - after
     stats_info = '%s.%s - %d' % (my_collection_db, my_collection, diff)
     return (my_collection_db, my_collection, s, diff)
@@ -175,7 +176,7 @@ for (compact_db, collection, stats, diff) in pool.imap_unordered(compact, compac
     # Don't allow '/' to occur in collection name output
     collection = re.sub(r'\/', '_', collection)
     log.debug('%s.%s stats: \n%s (%d)\n' % (compact_db, collection, stats, diff))
-    with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
-        json.dump(stats, outfile)
+    #with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
+    #    json.dump(stats, outfile)
 
 log.info('=======Mongo CompactionComplete.========')
