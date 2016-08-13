@@ -15,9 +15,9 @@ class test_compaction(t.TestCase):
         return ''.join(random.choice(string.ascii_letters)
                        for _ in range(chars))
 
-    def load_collection_docs(self):
+    def load_collection_docs(self,databases):
         '''We should be able to insert data into a collection for load tests'''
-        insertions = 100
+        insertions = 200
         total_insert = 0
         avg_insert = 0
         test_collections = ['mongo_collection', 'mongo_collection_one', 'mongo_collection_two']
@@ -41,14 +41,17 @@ class test_compaction(t.TestCase):
             total_insert = inserted_time
 
             total_insert_duration = total_insert - start_time
-            print(' - inserted %d in %9.2f seconds' % (100, total_insert_duration))
+            print('%s.%s - inserted %d in %9.2f seconds' % (databases,
+                                                            collections,
+                                                            ins,
+                                                            total_insert_duration))
             print('  - Avg insert time: %9.4f seconds' % avg_insert)
         return (total_insert_duration)
 
-    def delete_collection_docs(self):
+    def delete_collection_docs(self,databases):
         '''We should be able to delete a subset of documents from a collection'''
 
-        deletes = 40
+        deletes = 120
         total_delete = 0
         avg_delete = 0
         deleted = 0
@@ -69,7 +72,10 @@ class test_compaction(t.TestCase):
         total_delete = deleted_time
 
         total_delete_duration = total_delete - start_time
-        print('Deleted %d in %9.2f seconds' % (deleted, total_delete_duration))
+        print('%s.%s - Deleted %d in %9.2f seconds' % (databases,
+                                                       collections,
+                                                       deleted,
+                                                       total_delete_duration))
         print(' - Avg delete time: %9.4f seconds' % avg_delete)
         return (total_delete_duration)
 
@@ -81,8 +87,8 @@ class test_compaction(t.TestCase):
                                   connectTimeoutMS=2000, socketTimeoutMS=2000)
         for databases in test_dbs:
             self.db = self.conn[databases]
-            load_duration = self.load_collection_docs()
-            delete_duration = self.delete_collection_docs()
+            load_duration = self.load_collection_docs(databases)
+            delete_duration = self.delete_collection_docs(databases)
 
     def test_compaction(self):
         '''We should be able to compact a collection'''
