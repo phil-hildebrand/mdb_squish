@@ -133,7 +133,7 @@ compact_collections = []
 pool = ThreadPool(args.concurrency)
 skip_dbs = ['local', 'admin']
 skip_collections = ['system.namespaces', 'system.indexes',
-                    'system.profile', 'system.js']]
+                    'system.profile', 'system.js']
 
 if args.database[0] != 'all':
     compact_db = args.database[0]
