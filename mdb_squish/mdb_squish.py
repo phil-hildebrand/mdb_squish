@@ -37,13 +37,12 @@ def compact(collection_args):
     db = conn[my_collection_db]
     stats = db.command("collstats", my_collection)
     before = stats['storageSize']
-    log.debug(' - compcating collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, before))
+    log.debug(' - compacting collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, before))
     s = db.command("compact", my_collection)
     stats = db.command("collstats", my_collection)
     after = stats['storageSize']
-    log.debug(' - compcated collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, after))
+    log.debug(' - compacted collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, after))
     diff = before - after
-    stats_info = '%s.%s - %d' % (my_collection_db, my_collection, diff)
     return (my_collection_db, my_collection, s, diff)
 
 ###############################################################################
@@ -137,6 +136,7 @@ except Exception as e:
 ###############################################################################
 
 compact_collections = []
+total_compacted = 0
 pool = ThreadPool(args.concurrency)
 skip_dbs = ['local', 'admin']
 skip_collections = ['system.namespaces', 'system.indexes',
@@ -162,7 +162,6 @@ else:
     for compact_db in conn.database_names():
         if compact_db not in skip_dbs:
             db = conn[compact_db]
-            log.debug(' -- %s' % compact_db)
             for collection in db.collection_names():
                 if collection not in skip_collections:
                     log.debug('Scheduling compaction for %s' % collection)
@@ -175,8 +174,11 @@ else:
 for (compact_db, collection, stats, diff) in pool.imap_unordered(compact, compact_collections):
     # Don't allow '/' to occur in collection name output
     collection = re.sub(r'\/', '_', collection)
+    total_compacted = total_compacted + diff
+
     log.debug('%s.%s stats: \n%s (%d)\n' % (compact_db, collection, stats, diff))
     #with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
     #    json.dump(stats, outfile)
 
+log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
 log.info('=======Mongo CompactionComplete.========')
