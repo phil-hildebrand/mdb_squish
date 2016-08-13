@@ -54,6 +54,7 @@ class test_compaction(t.TestCase):
         deletes = 120
         total_delete = 0
         avg_delete = 0
+        deleted = 0
         test_collections = ['mongo_collection', 'mongo_collection_one', 'mongo_collection_two']
 
         for collections in test_collections:
@@ -73,10 +74,11 @@ class test_compaction(t.TestCase):
             total_delete = deleted_time
 
             total_delete_duration = total_delete - start_time
-            print('%s.%s - Deleted %d in %9.2f seconds' % (databases,
-                                                           collections,
-                                                           deleted,
-                                                           total_delete_duration))
+            print('%s.%s - Deleted %d (%d reported) in %9.2f seconds' % (databases,
+                                                                         collections,
+                                                                         delete,
+                                                                         deleted,
+                                                                         total_delete_duration))
             print(' - Avg delete time: %9.4f seconds' % avg_delete)
         return (total_delete_duration)
 
