@@ -147,7 +147,8 @@ else:
     ###############################################################################
 
     log.debug('Compacting all collections in all databases')
-    for compact_db in db.database_names():
+    for compact_db in conn.database_names():
+        db = conn[compact_db]
         log.debug(' -- %s' % compact_db)
         for collection in db.collection_names():
             log.debug('Scheduling compaction for %s' % collection)
