@@ -132,7 +132,7 @@ except Exception as e:
 compact_collections = []
 pool = ThreadPool(args.concurrency)
 
-if args.database != 'all':
+if args.database[0] != 'all':
     compact_db = args.database[0]
     db = conn[compact_db]
     log.debug('Compacting all collections in database %s' % compact_db)
