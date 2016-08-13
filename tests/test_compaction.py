@@ -55,6 +55,7 @@ class test_compaction(t.TestCase):
         total_delete = 0
         avg_delete = 0
         deleted = 0
+        test_collections = ['mongo_collection', 'mongo_collection_one', 'mongo_collection_two']
 
         for collections in test_collections:
             start_time = time.time()
