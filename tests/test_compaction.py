@@ -56,27 +56,28 @@ class test_compaction(t.TestCase):
         avg_delete = 0
         deleted = 0
 
-        start_time = time.time()
-        for doc in range(deletes):
-            delete_time = time.time()
-            try:
-                result = self.db['mongo_collection'].delete_one({"randString": {"$exists": "true"}})
-                deleted += result.deleted_count
+        for collections in test_collections:
+            start_time = time.time()
+            for doc in range(deletes):
+                delete_time = time.time()
+                try:
+                    result = self.db['mongo_collection'].delete_one({"randString": {"$exists": "true"}})
+                    deleted += result.deleted_count
 
-            except Exception as e:
-                print ('Delete Failed: (%s)' % e)
-                t.testcase.fail('Delete Failed')
+                except Exception as e:
+                    print ('Delete Failed: (%s)' % e)
+                    t.testcase.fail('Delete Failed')
 
-            deleted_time = time.time()
-            avg_delete = (deleted_time - start_time) / (doc + 1)
-        total_delete = deleted_time
+                deleted_time = time.time()
+                avg_delete = (deleted_time - start_time) / (doc + 1)
+            total_delete = deleted_time
 
-        total_delete_duration = total_delete - start_time
-        print('%s.%s - Deleted %d in %9.2f seconds' % (databases,
-                                                       collections,
-                                                       deleted,
-                                                       total_delete_duration))
-        print(' - Avg delete time: %9.4f seconds' % avg_delete)
+            total_delete_duration = total_delete - start_time
+            print('%s.%s - Deleted %d in %9.2f seconds' % (databases,
+                                                           collections,
+                                                           deleted,
+                                                           total_delete_duration))
+            print(' - Avg delete time: %9.4f seconds' % avg_delete)
         return (total_delete_duration)
 
     def setUp(self):
