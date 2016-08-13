@@ -131,15 +131,19 @@ except Exception as e:
 
 compact_collections = []
 pool = ThreadPool(args.concurrency)
-skip_dbs = ['local']
+skip_dbs = ['local', 'admin']
+skip_collections = ['system.namespaces', 'system.indexes',
+                    'system.profile', 'system.js']]
 
 if args.database[0] != 'all':
     compact_db = args.database[0]
     db = conn[compact_db]
-    log.debug('Compacting all collections in database %s' % compact_db)
-    for collection in db.collection_names():
-        log.debug('Scheduling Compaction for collection %s' % collection)
-        compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+    if compact_db not in skip_dbs:
+        log.debug('Compacting all collections in database %s' % compact_db)
+        for collection in db.collection_names():
+            if collection not in skip_collections:
+                log.debug('Scheduling Compaction for collection %s' % collection)
+                compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
 else:
 
     ###############################################################################
@@ -153,8 +157,9 @@ else:
             db = conn[compact_db]
             log.debug(' -- %s' % compact_db)
             for collection in db.collection_names():
-                log.debug('Scheduling compaction for %s' % collection)
-                compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+                if collection not in skip_collections:
+                    log.debug('Scheduling compaction for %s' % collection)
+                    compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
 
 #######################################################################################
 #    Compact collections in parallel, and log timings per collection
