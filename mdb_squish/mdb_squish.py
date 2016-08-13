@@ -171,7 +171,7 @@ else:
 #    Compact collections in parallel, and log timings per collection
 #######################################################################################
 
-for (compact_db, collection, stats) in pool.imap_unordered(compact, compact_collections):
+for (compact_db, collection, stats, diff) in pool.imap_unordered(compact, compact_collections):
     # Don't allow '/' to occur in collection name output
     collection = re.sub(r'\/', '_', collection)
     log.debug('%s.%s stats: \n%s (%d)\n' % (compact_db, collection, stats, diff))
