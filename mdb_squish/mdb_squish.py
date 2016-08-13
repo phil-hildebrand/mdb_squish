@@ -131,6 +131,7 @@ except Exception as e:
 
 compact_collections = []
 pool = ThreadPool(args.concurrency)
+skip_dbs = ['local']
 
 if args.database[0] != 'all':
     compact_db = args.database[0]
@@ -148,10 +149,22 @@ else:
 
     log.debug('Compacting all collections in all databases')
     for compact_db in conn.database_names():
-        db = conn[compact_db]
-        log.debug(' -- %s' % compact_db)
-        for collection in db.collection_names():
-            log.debug('Scheduling compaction for %s' % collection)
-            compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+        if compact_db not in skip_dbs:
+            db = conn[compact_db]
+            log.debug(' -- %s' % compact_db)
+            for collection in db.collection_names():
+                log.debug('Scheduling compaction for %s' % collection)
+                compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+
+#######################################################################################
+#    Compact collections in parallel, and log timings per collection
+#######################################################################################
+
+for (compact_db, collection, stats) in pool.imap_unordered(compact, compact_collections):
+    # Don't allow '/' to occur in collection name output
+    collection = re.sub(r'\/', '_', collection)
+    log.debug('%s.%s stats: \n%s\n' % (compact_db, collection, stats))
+    with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
+        json.dump(stats, outfile)
 
 log.info('=======Mongo CompactionComplete.========')
