@@ -31,15 +31,16 @@ def verify_file(f):
 #    Compact collections
 ###############################################################################
 
+
 def compact(collection_args):
     my_collection_db, my_collection, my_concurrency, my_stats_dir = collection_args
     db = conn[my_collection_db]
-    stats = db[my_collection].stats()
+    stats = db.command("collstats", my_collection)
     before = stats['storageSize']
     log.debug(' - compcating collection %s.%s' % (my_collection_db, my_collection))
     s = db.command("compact", my_collection)
-    stats = db[my_collection].stats()
-    after = stats['storageSize'] 
+    stats = db.command("collstats", my_collection)
+    after = stats['storageSize']
     diff = before - after
     stats_info = '%s.%s - %d' % (my_collection_db, my_collection, diff)
     return (my_collection_db, my_collection, s, diff)
