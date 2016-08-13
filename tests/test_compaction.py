@@ -54,12 +54,11 @@ class test_compaction(t.TestCase):
         deletes = 120
         total_delete = 0
         avg_delete = 0
-        deleted = 0
         test_collections = ['mongo_collection', 'mongo_collection_one', 'mongo_collection_two']
 
         for collections in test_collections:
             start_time = time.time()
-            for doc in range(deletes):
+            for delete in range(deletes):
                 delete_time = time.time()
                 try:
                     result = self.db['mongo_collection'].delete_one({"randString": {"$exists": "true"}})
@@ -70,7 +69,7 @@ class test_compaction(t.TestCase):
                     t.testcase.fail('Delete Failed')
 
                 deleted_time = time.time()
-                avg_delete = (deleted_time - start_time) / (doc + 1)
+                avg_delete = (deleted_time - start_time) / (delete + 1)
             total_delete = deleted_time
 
             total_delete_duration = total_delete - start_time
