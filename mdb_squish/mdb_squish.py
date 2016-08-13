@@ -34,10 +34,15 @@ def verify_file(f):
 def compact(collection_args):
     my_collection_db, my_collection, my_concurrency, my_stats_dir = collection_args
     db = conn[my_collection_db]
-    s = db.command("compact", my_collection)
+    stats = db[my_collection].stats()
+    before = stats['storageSize']
     log.debug(' - compcating collection %s.%s' % (my_collection_db, my_collection))
-    stats_info = '%s.%s' % (my_collection_db, my_collection)
-    return (my_collection_db, my_collection, s)
+    s = db.command("compact", my_collection)
+    stats = db[my_collection].stats()
+    after = stats['storageSize'] 
+    diff = before - after
+    stats_info = '%s.%s - %d' % (my_collection_db, my_collection, diff)
+    return (my_collection_db, my_collection, s, diff)
 
 ###############################################################################
 #    Parse Comandline Options
@@ -168,7 +173,7 @@ else:
 for (compact_db, collection, stats) in pool.imap_unordered(compact, compact_collections):
     # Don't allow '/' to occur in collection name output
     collection = re.sub(r'\/', '_', collection)
-    log.debug('%s.%s stats: \n%s\n' % (compact_db, collection, stats))
+    log.debug('%s.%s stats: \n%s (%d)\n' % (compact_db, collection, stats, diff))
     with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
         json.dump(stats, outfile)
 
