@@ -139,7 +139,7 @@ except Exception as e:
 ###############################################################################
 
 compact_collections = []
-collection_stats = []
+collection_stats = {}
 total_compacted = 0
 total_duration = 0.0
 total_collections = 1.0
@@ -156,6 +156,10 @@ if args.database[0] != 'all':
         for collection in db.collection_names():
             if collection not in skip_collections:
                 log.debug('Scheduling Compaction for collection %s' % collection)
+                collection_stats[collection] = {'name': collection, 'compacted': 0,
+                                                'initial_size': 'unknown',
+                                                'compacted_size': 'unknown',
+                                                'saved': 0, 'duration': 0.0}
                 compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
 else:
 
@@ -170,6 +174,10 @@ else:
             db = conn[compact_db]
             for collection in db.collection_names():
                 if collection not in skip_collections:
+                    collection_stats[collection] = {'name': collection, 'compacted': 0,
+                                                    'initial_size': 'unknown',
+                                                    'compacted_size': 'unknown',
+                                                    'saved': 0, 'duration': 0.0}
                     log.debug('Scheduling compaction for %s' % collection)
                     compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
 
@@ -184,11 +192,13 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     total_duration = total_duration + duration
     avg_duration = total_duration / total_collections
     total_collections += 1.0
-    collection_stats.append({'name': collection, 'saved': diff, 'duration': duration})
+    collection_stats[collection]['saved'] = diff
+    collection_stats[collection]['duration'] = duration
+    collection_stats[collection]['compacted'] = 1
     log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
     log.debug('\n  %s \n' % (json.dumps(collection_stats)))
-    # with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
-    #     json.dump(stats, outfile)
+    with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
+        json.dump(collection_stats, outfile)
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
 log.info(' Total Time for compacting all collections: %0.4f Seconds' % total_duration)
