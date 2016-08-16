@@ -41,11 +41,11 @@ class test_compaction(t.TestCase):
             total_insert = inserted_time
 
             total_insert_duration = total_insert - start_time
-            print('%s.%s - inserted %d in %9.2f seconds' % (databases,
+            print('%s.%s - inserted %d in %0.2f seconds' % (databases,
                                                             collections,
                                                             ins,
                                                             total_insert_duration))
-            print('  - Avg insert time: %9.4f seconds' % avg_insert)
+            print('  - Avg insert time: %0.4f seconds' % avg_insert)
         return (total_insert_duration)
 
     def delete_collection_docs(self,databases):
@@ -109,3 +109,4 @@ class test_compaction(t.TestCase):
 
         s = self.db.command("collstats", 'mongo_collection')
         print(json.dumps(s, sort_keys=True, indent=4, separators=(',', ': ')))
+        print('Compact Time: %0.4f seconds' % time.time() - start_time)

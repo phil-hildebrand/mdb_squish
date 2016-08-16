@@ -34,8 +34,6 @@ def verify_file(f):
 
 
 def compact(collection_args):
-    duration = 0.0
-    start_time = 0.0
     my_collection_db, my_collection, my_concurrency, my_stats_dir = collection_args
     db = conn[my_collection_db]
     stats = db.command("collstats", my_collection)
@@ -191,6 +189,6 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     #    json.dump(stats, outfile)
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
-log.info(' Total Time for compacting all collections: %d Seconds' % total_duration)
-log.info(' Avg Time to compact a collection: %0.2f Seconds' % avg_duration)
+log.info(' Total Time for compacting all collections: %0.4f Seconds' % total_duration)
+log.info(' Avg Time to compact a collection: %0.5f Seconds' % avg_duration)
 log.info('=======Mongo CompactionComplete.========')
