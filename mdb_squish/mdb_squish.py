@@ -140,8 +140,8 @@ except Exception as e:
 
 compact_collections = []
 total_compacted = 0
-total_duration = 0
-total_collections = 1
+total_duration = 0.0
+total_collections = 1.0
 pool = ThreadPool(args.concurrency)
 skip_dbs = ['local', 'admin']
 skip_collections = ['system.namespaces', 'system.indexes',
@@ -182,7 +182,7 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     total_compacted = total_compacted + diff
     total_duration = total_duration + duration
     avg_duration = total_duration / total_collections
-    total_collections += 1
+    total_collections += 1.0
 
     log.debug('%s.%s stats: \n%s (%d, %d)\n' % (compact_db, collection, stats, diff, duration))
     # with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
@@ -190,5 +190,5 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
 log.info(' Total Time for compacting all collections: %d Seconds' % total_duration)
-log.info(' Avg Time to compact a collection: %d Seconds' % avg_duration)
+log.info(' Avg Time to compact a collection: %0.2f Seconds' % avg_duration)
 log.info('=======Mongo CompactionComplete.========')
