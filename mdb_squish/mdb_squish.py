@@ -34,6 +34,8 @@ def verify_file(f):
 
 
 def compact(collection_args):
+    duration = 0.0
+    start_time = 0.0
     my_collection_db, my_collection, my_concurrency, my_stats_dir = collection_args
     db = conn[my_collection_db]
     stats = db.command("collstats", my_collection)
