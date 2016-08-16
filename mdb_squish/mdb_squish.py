@@ -184,13 +184,11 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     total_duration = total_duration + duration
     avg_duration = total_duration / total_collections
     total_collections += 1.0
-    collection_stats[collection]['saved'] = diff
-    collection_stats[collection]['duration'] = duration
-
-    # log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
-    log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, collection_stats[collection]['saved'], collection_stats[collection]['duration']))
+    collection_stats.append({'name': collection, 'saved': diff, 'duration': duration})
+    log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
+    log.debug('\n  %s \n' % (json.dumps(collection_stats)))
     # with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
-    #    json.dump(stats, outfile)
+    #     json.dump(stats, outfile)
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
 log.info(' Total Time for compacting all collections: %0.4f Seconds' % total_duration)
