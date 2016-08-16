@@ -26,6 +26,25 @@ def verify_file(f):
         log.error('  %s does not exist, exiting program.' % f)
         sys.exit(2)
 
+
+###############################################################################
+#    Compact collections
+###############################################################################
+
+
+def compact(collection_args):
+    my_collection_db, my_collection, my_concurrency, my_stats_dir = collection_args
+    db = conn[my_collection_db]
+    stats = db.command("collstats", my_collection)
+    before = stats['storageSize']
+    log.debug(' - compacting collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, before))
+    s = db.command("compact", my_collection)
+    stats = db.command("collstats", my_collection)
+    after = stats['storageSize']
+    log.debug(' - compacted collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, after))
+    diff = before - after
+    return (my_collection_db, my_collection, s, diff)
+
 ###############################################################################
 #    Parse Comandline Options
 ###############################################################################
@@ -112,5 +131,54 @@ except Exception as e:
     log.error(e)
     sys.exit(2)
 
+###############################################################################
+#    Parse database and collection list and run compactions in parallel
+###############################################################################
 
-log.info('=======Mongo Stat Collection Complete.========')
+compact_collections = []
+total_compacted = 0
+pool = ThreadPool(args.concurrency)
+skip_dbs = ['local', 'admin']
+skip_collections = ['system.namespaces', 'system.indexes',
+                    'system.profile', 'system.js']
+
+if args.database[0] != 'all':
+    compact_db = args.database[0]
+    db = conn[compact_db]
+    if compact_db not in skip_dbs:
+        log.debug('Compacting all collections in database %s' % compact_db)
+        for collection in db.collection_names():
+            if collection not in skip_collections:
+                log.debug('Scheduling Compaction for collection %s' % collection)
+                compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+else:
+
+    ###############################################################################
+    #    If collection objects not filtered, Get full database and table list
+    #     and run compactions in parallel
+    ###############################################################################
+
+    log.debug('Compacting all collections in all databases')
+    for compact_db in conn.database_names():
+        if compact_db not in skip_dbs:
+            db = conn[compact_db]
+            for collection in db.collection_names():
+                if collection not in skip_collections:
+                    log.debug('Scheduling compaction for %s' % collection)
+                    compact_collections.append([compact_db, collection, args.concurrency, args.stats_dir])
+
+#######################################################################################
+#    Compact collections in parallel, and log timings per collection
+#######################################################################################
+
+for (compact_db, collection, stats, diff) in pool.imap(compact, compact_collections):
+    # Don't allow '/' to occur in collection name output
+    collection = re.sub(r'\/', '_', collection)
+    total_compacted = total_compacted + diff
+
+    log.debug('%s.%s stats: \n%s (%d)\n' % (compact_db, collection, stats, diff))
+    #with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
+    #    json.dump(stats, outfile)
+
+log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
+log.info('=======Mongo CompactionComplete.========')

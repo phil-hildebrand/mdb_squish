@@ -9,7 +9,7 @@ with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
 setup(name = 'mdb_squish',
-      version = '0.1.0',
+      version = '0.1.1',
       description = 'MongoDB compaction tool',
       url = 'http://github.com/phil-hildebrand/mdb-squish',
       author = 'Phil Hildebrand',
@@ -20,7 +20,4 @@ setup(name = 'mdb_squish',
       package_dir = {'mdb_squish': 'mdb_squish'},
       test_suite="tests",
       use_2to3=True
-#      scripts = ['bin/mdb_squish.py'],
-#      cmdclass = {'test': TestCommand, 'clean': CleanCommand}
 )
-
