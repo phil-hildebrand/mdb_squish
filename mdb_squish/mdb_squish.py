@@ -184,11 +184,11 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     avg_duration = total_duration / total_collections
     total_collections += 1.0
 
-    log.debug('%s.%s stats: \n%s (%d, %d)\n' % (compact_db, collection, stats, diff, duration))
+    log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
     # with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
     #    json.dump(stats, outfile)
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
 log.info(' Total Time for compacting all collections: %0.4f Seconds' % total_duration)
-log.info(' Avg Time to compact a collection: %0.5f Seconds' % avg_duration)
+log.info(' Avg Time to compact a collection: %0.4f Seconds' % avg_duration)
 log.info('=======Mongo CompactionComplete.========')

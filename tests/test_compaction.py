@@ -109,4 +109,4 @@ class test_compaction(t.TestCase):
 
         s = self.db.command("collstats", 'mongo_collection')
         print(json.dumps(s, sort_keys=True, indent=4, separators=(',', ': ')))
-        print('Compact Time: %0.4f seconds' % time.time() - start_time)
+        print('Compact Time: %0.4f seconds' % (time.time() - start_time))
