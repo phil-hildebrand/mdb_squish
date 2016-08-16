@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import argparse
-import os
 import glob
-import pymongo as m
+import json
 import logging as log
+import os
+import pymongo as m
 import re
 import sys
-import json
+import time
 from multiprocessing.pool import ThreadPool
 
 ###############################################################################
