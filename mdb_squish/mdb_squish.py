@@ -141,6 +141,7 @@ except Exception as e:
 compact_collections = []
 total_compacted = 0
 total_duration = 0
+total_collections = 1
 pool = ThreadPool(args.concurrency)
 skip_dbs = ['local', 'admin']
 skip_collections = ['system.namespaces', 'system.indexes',
@@ -180,7 +181,8 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     collection = re.sub(r'\/', '_', collection)
     total_compacted = total_compacted + diff
     total_duration = total_duration + duration
-    avg_duration = total_duration / total_compacted
+    avg_duration = total_duration / total_collections
+    total_collections += 1
 
     log.debug('%s.%s stats: \n%s (%d, %d)\n' % (compact_db, collection, stats, diff, duration))
     # with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
