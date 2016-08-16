@@ -139,6 +139,7 @@ except Exception as e:
 ###############################################################################
 
 compact_collections = []
+collection_stats = []
 total_compacted = 0
 total_duration = 0.0
 total_collections = 1.0
@@ -183,8 +184,11 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     total_duration = total_duration + duration
     avg_duration = total_duration / total_collections
     total_collections += 1.0
+    collection_stats[collection]['saved'] = diff
+    collection_stats[collection]['duration'] = duration
 
-    log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
+    # log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
+    log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, collection_stats[collection]['saved'], collection_stats[collection]['duration']))
     # with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
     #    json.dump(stats, outfile)
 
