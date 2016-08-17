@@ -65,6 +65,8 @@ parser.add_argument('--collections', nargs='+',
                     help='limit compaction to these collections')
 parser.add_argument('-c', '--concurrency', default=3, type=int,
                     help='# of compaction threads (default=3)')
+parser.add_argument('-r', '--stats-rate', default=2, type=int,
+                    help='update stats file after x compcations (default=2)')
 parser.add_argument('--log-dir', default='/var/log',
                     help='MongoDB Get compaction log file location (default=/var/log)')
 parser.add_argument('--stats-dir', default='/tmp',
@@ -197,8 +199,9 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     collection_stats[collection]['compacted'] = 1
     log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
     log.debug('\n  %s \n' % (json.dumps(collection_stats)))
-    with open('%s/%s.%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
-        json.dump(collection_stats, outfile)
+    if (total_collection % stats_rate) == 0:
+        with open('%s/mdb_squish_%s_stats.json' % (stats_dir, compact_db, collection), 'w') as outfile:
+            json.dump(collection_stats, outfile)
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
 log.info(' Total Time for compacting all collections: %0.4f Seconds' % total_duration)
