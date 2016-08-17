@@ -46,7 +46,7 @@ def compact(collection_args):
     after = stats['storageSize']
     log.debug(' - compacted collection %s.%s (%d Bytes)' % (my_collection_db, my_collection, after))
     diff = before - after
-    return (my_collection_db, my_collection, s, diff, duration)
+    return (my_collection_db, my_collection, before, after, diff, duration)
 
 ###############################################################################
 #    Parse Comandline Options
@@ -70,7 +70,7 @@ parser.add_argument('-r', '--rate', default=2, type=int,
 parser.add_argument('--log-dir', default='/var/log',
                     help='MongoDB Get compaction log file location (default=/var/log)')
 parser.add_argument('--stats-dir', default='/tmp',
-                    help='MongoDB compaction stats dump file location (default=/tmp/<server>.mdb_squish_stats')
+                    help='MongoDB compaction stats dump file location (default=/tmp)')
 args = parser.parse_args()
 
 ###############################################################################
@@ -186,17 +186,20 @@ else:
 #    Compact collections in parallel, and log timings per collection
 #######################################################################################
 
-for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compact_collections):
+for (compact_db, collection, stats, before, after, diff, duration) in pool.imap(compact, compact_collections):
     # Don't allow '/' to occur in collection name output
     collection = re.sub(r'\/', '_', collection)
     total_compacted = total_compacted + diff
     total_duration = total_duration + duration
     avg_duration = total_duration / total_collections
+    avg_compacted = total_compacted / total_collections
     total_collections += 1.0
     collection_stats[collection]['saved'] = diff
+    collection_stats[collection]['initial_size'] = before
+    collection_stats[collection]['compacted_size'] = after
     collection_stats[collection]['duration'] = duration
     collection_stats[collection]['compacted'] = 1
-    log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
+    log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, diff, duration))
     log.debug('\n  %s \n' % (json.dumps(collection_stats)))
     if (total_collections % args.rate) == 0:
         log.debug('Updating %s/mdb_squish_%s_stats.json' % (args.stats_dir, compact_db))
@@ -204,6 +207,7 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
             json.dump(collection_stats, outfile)
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
+log.info(' Avg space saved for a collection: %d Bytes' % avg_compacted)
 log.info(' Total Time for compacting all collections: %0.4f Seconds' % total_duration)
 log.info(' Avg Time to compact a collection: %0.4f Seconds' % avg_duration)
 log.info('=======Mongo CompactionComplete.========')

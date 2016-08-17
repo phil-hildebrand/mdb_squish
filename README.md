@@ -45,11 +45,48 @@ optional arguments:
                         limit compaction to these collections
   -c CONCURRENCY, --concurrency CONCURRENCY
                         # of compaction threads (default=3)
+  -r RATE, --rate RATE  update stats file after x compcations (default=2)
   --log-dir LOG_DIR     MongoDB Get compaction log file location
                         (default=/var/log)
   --stats-dir STATS_DIR
                         MongoDB compaction stats dump file location
-                        (default=/tmp/<server>.mdb_squish_stats
+                        (default=/tmp/)
+```
+
+### Statistics
+
+ MDB Squish will dump a stats file per database in the stats-dir.
+By default, the stats-dir is /tmp.  Each stat file is json output and
+named mdb_stats_<dbname>.json.
+
+ Example Data:
+```
+{
+    "mongo_collection": {
+        "compacted": 1,
+        "compacted_size": 125,
+        "duration": 0.0009090900421142578,
+        "initial_size": 75,
+        "name": "mongo_collection",
+        "saved": -4096
+    },
+    "mongo_collection_one": {
+        "compacted": 1,
+        "compacted_size": 125,
+        "duration": 0.005066871643066406,
+        "initial_size": 75,
+        "name": "mongo_collection_one",
+        "saved": 0
+    },
+    "mongo_collection_two": {
+        "compacted": 1,
+        "compacted_size": 125,
+        "duration": 0.0020208358764648438,
+        "initial_size": 75,
+        "name": "mongo_collection_two",
+        "saved": 86016
+    }
+}
 ```
 
 ## Known Issues
