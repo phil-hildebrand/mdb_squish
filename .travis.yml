@@ -25,5 +25,4 @@ script:
   - python mdb_squish --help
   - python mdb_squish -v -d mongo_test --collections mongo_collection --log-dir . --stats-dir .
   - python mdb_squish -v -c 2 -d all --collections mongo_collection --log-dir . --stats-dir .
-  - ls 
   - cat mdb_squish*stats.json | python -mjson.tool

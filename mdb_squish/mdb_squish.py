@@ -103,11 +103,10 @@ log.info('******** Gathering Stats/Configs *********')
 
 if args.server:
     mongo_host = args.server
-    stats_dir = '%s/%s' % (args.stats_dir, mongo_host)
     log.debug('DB Host: %s' % mongo_host)
 
-if not os.path.exists(stats_dir):
-    os.makedirs(stats_dir)
+if not os.path.exists(args.stats_dir):
+    os.makedirs(args.stats_dir)
 
 if args.port:
     mongo_port = args.port
@@ -117,7 +116,7 @@ log.debug('Verbose output.')
 
 
 verify_file(args.log_dir)
-verify_file(stats_dir)
+verify_file(args.stats_dir)
 
 ###############################################################################
 #    Connection details
@@ -200,8 +199,8 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
     log.debug('\n  %s \n' % (json.dumps(collection_stats)))
     if (total_collections % args.rate) == 0:
-        log.debug('Updating %s/mdb_squish_%s_stats.json' % (stats_dir, compact_db))
-        with open('%s/mdb_squish_%s_stats.json' % (stats_dir, compact_db), 'w') as outfile:
+        log.debug('Updating %s/mdb_squish_%s_stats.json' % (args.stats_dir, compact_db))
+        with open('%s/mdb_squish_%s_stats.json' % (args.stats_dir, compact_db), 'w') as outfile:
             json.dump(collection_stats, outfile)
 
 log.info(' Total space saved via compaction: %d Bytes' % total_compacted)
