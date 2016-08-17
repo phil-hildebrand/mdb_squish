@@ -200,6 +200,7 @@ for (compact_db, collection, stats, diff, duration) in pool.imap(compact, compac
     log.debug('%s.%s stats: \n%s (%d, %0.4f)\n' % (compact_db, collection, stats, diff, duration))
     log.debug('\n  %s \n' % (json.dumps(collection_stats)))
     if (total_collections % args.rate) == 0:
+        log.debug('Updating %s/mdb_squish_%s_stats.json' % (stats_dir, compact_db))
         with open('%s/mdb_squish_%s_stats.json' % (stats_dir, compact_db), 'w') as outfile:
             json.dump(collection_stats, outfile)
 
