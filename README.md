@@ -57,7 +57,7 @@ optional arguments:
 
  MDB Squish will dump a stats file per database in the stats-dir.
 By default, the stats-dir is /tmp.  Each stat file is json output and
-named `mdb_stats_<dbname>.json`.
+named `mdb_squish_<dbname>_stats.json`.
 
  Example Data:
 ```
